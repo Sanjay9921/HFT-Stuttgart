@@ -1,0 +1,49 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "https://excalidraw.com",
+  "elements": [
+    {
+      "type": "text",
+      "version": 214,
+      "versionNonce": 1118878689,
+      "index": "a1",
+      "isDeleted": false,
+      "id": "4rW6CAZ8v3gY4OLYaSkFy",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "angle": 0,
+      "x": 949.5500106811523,
+      "y": 140.70001220703125,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "width": 237.6197967529297,
+      "height": 275,
+      "seed": 1017141879,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": null,
+      "boundElements": [],
+      "updated": 1716797408241,
+      "link": null,
+      "locked": false,
+      "fontSize": 20,
+      "fontFamily": 1,
+      "text": "K = { \n        { fx s cx }\n        { 0 fy cy }\n        { 0  0  1 }\n    }\n\nfx = 2642 pixels\ns = 0 (skew coefficient)\ncx = 1034 pixels\nfy = 2642 pixels\ncy = 764 pixels",
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "containerId": null,
+      "originalText": "K = { \n        { fx s cx }\n        { 0 fy cy }\n        { 0  0  1 }\n    }\n\nfx = 2642 pixels\ns = 0 (skew coefficient)\ncx = 1034 pixels\nfy = 2642 pixels\ncy = 764 pixels",
+      "autoResize": true,
+      "lineHeight": 1.25
+    }
+  ],
+  "appState": {
+    "gridSize": null,
+    "viewBackgroundColor": "#ffffff"
+  },
+  "files": {}
+}

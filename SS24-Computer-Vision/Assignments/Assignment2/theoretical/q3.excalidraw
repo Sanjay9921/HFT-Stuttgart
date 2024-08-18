@@ -1,0 +1,49 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "https://excalidraw.com",
+  "elements": [
+    {
+      "type": "text",
+      "version": 157,
+      "versionNonce": 63523595,
+      "index": "a1",
+      "isDeleted": false,
+      "id": "4rW6CAZ8v3gY4OLYaSkFy",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "angle": 0,
+      "x": 949.5500106811523,
+      "y": 140.70001220703125,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "width": 194.4799346923828,
+      "height": 275,
+      "seed": 1017141879,
+      "groupIds": [],
+      "frameId": null,
+      "roundness": null,
+      "boundElements": [],
+      "updated": 1716793924151,
+      "link": null,
+      "locked": false,
+      "fontSize": 20,
+      "fontFamily": 1,
+      "text": "K = { \n        { fx s cx }\n        { 0 fy cy }\n        { 0  0  1 }\n    }\n\nfx = 2642\ns = 0\ncx = 1034\nfy = 2642\ncy = 764",
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "containerId": null,
+      "originalText": "K = { \n        { fx s cx }\n        { 0 fy cy }\n        { 0  0  1 }\n    }\n\nfx = 2642\ns = 0\ncx = 1034\nfy = 2642\ncy = 764",
+      "autoResize": true,
+      "lineHeight": 1.25
+    }
+  ],
+  "appState": {
+    "gridSize": null,
+    "viewBackgroundColor": "#ffffff"
+  },
+  "files": {}
+}
