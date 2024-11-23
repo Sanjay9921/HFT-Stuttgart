@@ -1,0 +1,8 @@
+sample\app\layer1\infrastructure\db\SomeSQLDatabase$DatabaseException.class
+sample\app\layer1\infrastructure\db\SomeSQLDatabase$Database.class
+sample\app\layer2\domain\functions\DomainFunction.class
+sample\app\common\domain\model\Something.class
+sample\app\layer5\main\Main.class
+sample\app\layer1\infrastructure\db\SomeSQLDatabase.class
+sample\app\layer3\application\usecases\BusinessUseCases.class
+sample\app\layer4\infrastructure\ui\UserInteraction.class

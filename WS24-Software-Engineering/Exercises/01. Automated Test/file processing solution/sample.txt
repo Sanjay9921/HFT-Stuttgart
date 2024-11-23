@@ -1,0 +1,4 @@
+Hello, this is a sample file.
+Each line of text will be processed.
+Converting to uppercase is easy in Java.
+Have a great day!

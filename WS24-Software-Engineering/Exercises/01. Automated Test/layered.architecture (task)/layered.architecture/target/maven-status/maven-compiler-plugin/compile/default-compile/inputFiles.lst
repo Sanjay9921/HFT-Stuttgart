@@ -1,0 +1,6 @@
+C:\Users\sanja\Desktop\Masters\Student-Github-Account\WS24-Software-Engineering\Exercises\01. Automated Test\layered.architecture (task)\layered.architecture\src\main\java\sample\app\common\domain\model\Something.java
+C:\Users\sanja\Desktop\Masters\Student-Github-Account\WS24-Software-Engineering\Exercises\01. Automated Test\layered.architecture (task)\layered.architecture\src\main\java\sample\app\layer1\infrastructure\db\SomeSQLDatabase.java
+C:\Users\sanja\Desktop\Masters\Student-Github-Account\WS24-Software-Engineering\Exercises\01. Automated Test\layered.architecture (task)\layered.architecture\src\main\java\sample\app\layer2\domain\functions\DomainFunction.java
+C:\Users\sanja\Desktop\Masters\Student-Github-Account\WS24-Software-Engineering\Exercises\01. Automated Test\layered.architecture (task)\layered.architecture\src\main\java\sample\app\layer3\application\usecases\BusinessUseCases.java
+C:\Users\sanja\Desktop\Masters\Student-Github-Account\WS24-Software-Engineering\Exercises\01. Automated Test\layered.architecture (task)\layered.architecture\src\main\java\sample\app\layer4\infrastructure\ui\UserInteraction.java
+C:\Users\sanja\Desktop\Masters\Student-Github-Account\WS24-Software-Engineering\Exercises\01. Automated Test\layered.architecture (task)\layered.architecture\src\main\java\sample\app\layer5\main\Main.java
