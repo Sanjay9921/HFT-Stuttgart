@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="1. Patterns">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/05.2.reflexive.injection.zip!/" />
+      <root url="jar://$PROJECT_DIR$/05.1+2.messaging.application.solutions.zip!/" />
+      <root url="jar://$PROJECT_DIR$/05.4.1.observer.property.change.listener.zip!/" />
+      <root url="jar://$PROJECT_DIR$/05.3.1+2.shop.solutions.zip!/" />
+      <root url="jar://$PROJECT_DIR$/05.4.2.observer.property.change.listener.extended.zip!/" />
+      <root url="jar://$PROJECT_DIR$/05.3.0.shop+libs.zip!/" />
+      <root url="jar://$PROJECT_DIR$/05.4.3.observer.new.usage.zip!/" />
+      <root url="jar://$PROJECT_DIR$/05.4.observer.new.library.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

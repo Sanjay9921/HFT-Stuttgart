@@ -1,0 +1,400 @@
+options {
+    STATIC = false;
+    LOOKAHEAD = 2; // Decisions to be made after the current token and the next token
+}
+
+PARSER_BEGIN(GWBasicToPCLParser)
+
+import data_structures.CustomDataStructures;
+
+public class GWBasicToPCLParser {
+
+    CustomDataStructures cds = new CustomDataStructures();
+    private boolean isAssignedVariable = false; // variable |array | input
+
+    public static void main(String[] args) throws ParseException {
+        GWBasicToPCLParser parser = new GWBasicToPCLParser(System.in);
+        SimpleNode root = parser.Program();
+        root.dump("");
+        System.out.println("GWBasicToPCLParser has completed parsing.");
+    }
+
+    public static int getLOS(SimpleNode node) {
+        if (node.toString().equals("Line")) {
+            return Integer.parseInt(node.value.toString());
+        } else {
+            return getLOS((SimpleNode) node.jjtGetParent());
+        }
+    }
+
+    public static void traverseAST(SimpleNode node) {
+        int n = node.jjtGetNumChildren();
+        for (int i = 0; i < n; i++) {
+            traverseAST((SimpleNode) node.jjtGetChild(i));
+        }
+    }
+
+    public static void dumpAST(SimpleNode node, int level) {
+        System.out.println(">>> " + node + (node.jjtGetValue() != null ? " = " + node.jjtGetValue() : " | "));
+        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+            dumpAST((SimpleNode) node.jjtGetChild(i), level + 1);
+        }
+    }
+
+    public void checkWhileLoop() throws ParseException {
+        if(!cds.loopWhile.isEmpty()) {
+            throw new ParseException("WHILE-WEND ERROR: Compiler detected " + cds.loopWhile.size() + " While Loops which are not closed!");
+        }
+    }
+
+    public void checkBranchesAndJumps() throws ParseException {
+        for (String lineNumber : cds.errBranches) {
+            if (!cds.los.contains(lineNumber)) {
+                throw new ParseException("JUMP/BRANCH ERROR: The jump to line number: " + lineNumber + " is invalid!");
+            }
+        }
+    }
+
+    public void checkForLoop() throws ParseException {
+        if(!cds.loopFor.isEmpty()) {
+            throw new ParseException("FOR LOOP ERROR: Compiler detected " + cds.loopFor.size() + " For Loops which are not closed!");
+        }
+    }
+
+    public String getType(String variableName) throws ParseException {
+        if (variableName.endsWith("%")) {
+            return "INTEGER";
+        }
+        else if(variableName.endsWith("$")) {
+            return "STRING";
+        }
+        else if (variableName.endsWith("#")) {
+            return "DOUBLE";
+        }
+        else {
+            throw new ParseException("Variable <" + variableName + "> is invalid!");
+        }
+    }
+
+    public void checkAssignmentStatements() throws ParseException {
+        for(String key : cds.errVariables) {
+            if(cds.variables.containsKey(key) == false) {
+                throw new ParseException("Variable <" + key + "> is not assigned!");
+            }
+        }
+    }
+}
+
+PARSER_END(GWBasicToPCLParser)
+
+SKIP : {
+    " " | "\t" | "\n" | "\r" | "\r\n"
+}
+
+TOKEN : {
+    < NUMBER: ("-")?(["0"-"9"])+ >
+  | < STRING: "\"" (~["\""])* "\"" >
+  | < PLUS: "+" >
+  | < MINUS: "-" >
+  | < MULTIPLY: "*" >
+  | < DIVIDE: "/" >
+  | < MOD: "%" >
+  | < POWER: "**" >
+  | < LT: "<" >
+  | < GT: ">" >
+  | < EQ: "=" >
+  | < NEQ: "<>" >
+  | < LTE: "<=" >
+  | < GTE: ">=" >
+  | < LEFTPAREN: "(" >
+  | < RIGHTPAREN: ")" >
+  | < COMMA: "," >
+  | < DIM: "DIM" >
+  | < GOTO: "GOTO" >
+  | < IF: "IF" >
+  | < END: "END" >
+  | < THEN: "THEN" >
+  | < ELSE: "ELSE" >
+  | < FOR: "FOR" >
+  | < TO: "TO" >
+  | < STEP: "STEP" >
+  | < NEXT: "NEXT" >
+  | < WHILE: "WHILE" >
+  | < WEND: "WEND" >
+  | < GOSUB: "GOSUB" >
+  | < RETURN: "RETURN" >
+  | < STOP: "STOP" >
+  | < REM: "REM" (~["\n","\r"])* >
+  | < PRINT: "PRINT" >
+  | < INPUT: "INPUT" >
+  | < IDENTIFIER: (<LETTER>)+ (["0"-"9","A"-"Z","a"-"z"])* >
+  | < VARIABLE: (<IDENTIFIER>) ("%" | "$" | "#") >
+  | < LETTER: ["A"-"Z","a"-"z"] >
+  | < EOL: "\n" | "\r" | "\r\n" >
+}
+
+SimpleNode Program() #Program : {}
+{
+    (( Line() )* ) <EOF> {
+        checkAssignmentStatements();
+        checkBranchesAndJumps();
+        checkWhileLoop();
+        checkForLoop();
+        return jjtThis;
+    }
+}
+
+void Line() #Line : {Token t;}
+{
+    t=<NUMBER> Statement() (<EOL> | <EOF>)?
+    {
+    if(cds.los.contains(t.image)) {
+        throw new ParseException ("Line [" + t.image + "] appeared more than once in the input file!");
+    }
+    cds.los.add(t.image);
+    jjtThis.jjtSetValue(t.image);
+}
+}
+
+void Statement() #Statement : {}
+{
+    (
+      stmtRETURN() | stmtSTOP() | stmtREM() | stmtEND() | stmtPRINT()
+      |  stmtFOR() | stmtNEXT() | stmtWHILE() | stmtWEND()
+      | stmtIF() | Assignment() | stmtDIM() | stmtGOTO() | stmtGOSUB()
+      | stmtINPUT() | stmtFUNCTION()
+    )
+}
+
+void stmtRETURN() #stmtRETURN : {}
+{
+    <RETURN>
+}
+
+void stmtSTOP() #stmtSTOP : {}
+{
+    <STOP>
+}
+
+void stmtREM() #stmtREM : {}
+{
+    <REM>
+}
+
+void stmtEND() #stmtEND : {}
+{
+    <END>
+}
+
+// PRINT-PRINT ITEM
+void stmtPRINT() #stmtPRINT : {
+}
+{
+    <PRINT> (String() | Expression()) (PrintItem())*
+}
+
+void PrintItem() #PrintItem : {
+}
+{
+    <COMMA> (String() | Expression())
+}
+
+// FOR-NEXT LOOP
+
+void stmtFOR() #stmtFOR : {
+}
+{
+    <FOR> Assignment() <TO> Expression() (<STEP> Expression())?
+    {
+        cds.loopFor.push("FOR");
+    }
+}
+
+void stmtNEXT() #stmtNEXT : {
+}
+{
+    <NEXT> Variable()
+    {
+    if(cds.loopFor.isEmpty()) {
+        throw new ParseException("FOR-NEXT ERROR: Next statement without a FOR!");
+        }
+    cds.loopFor.pop();
+    }
+}
+
+// WHILE-WEND LOOP
+
+void stmtWHILE() #stmtWHILE : {}
+{
+    <WHILE> Condition()
+    {
+         cds.loopWhile.push("WHILE");
+     }
+}
+
+void stmtWEND() #stmtWEND : {}
+{
+    <WEND>
+    {
+        if(cds.loopWhile.isEmpty()) {
+            throw new ParseException("WHILE-WEND ERROR: WEND statement without WHILE!");
+        }
+        cds.loopWhile.pop();
+    }
+}
+
+// IF BRANCHING
+
+void stmtIF() #stmtIF : {}
+{
+    <IF> Condition() <THEN> Statement() (<ELSE> Statement())?
+}
+
+void Condition() #Condition : {}
+{
+    Expression() ComparisonOperator() Expression()
+}
+
+void Assignment() #Assignment : {
+    isAssignedVariable = true;
+}
+{
+    VariableAccess() <EQ> Expression()
+    {
+    }
+}
+
+void stmtDIM() #stmtDIM : {
+    isAssignedVariable = true;
+}
+{
+    <DIM> ArrayCall()
+    {
+    }
+}
+
+void stmtGOTO() #stmtGOTO : { Token t;
+}
+{
+    <GOTO> Number()
+    {
+        t=getToken(0);
+        if (!cds.los.contains(t.image)) {
+            cds.errBranches.add(t.image);
+        }
+    }
+}
+
+void stmtGOSUB() #stmtGOSUB : { Token t;
+}
+{
+    <GOSUB> Number()
+    {
+            t=getToken(0);
+            if (!cds.los.contains(t.image)) {
+                cds.errBranches.add(t.image);
+            }
+    }
+}
+
+void stmtINPUT() #stmtINPUT : {
+    isAssignedVariable = true;
+}
+{
+    <INPUT> (String() <COMMA>)? VariableAccess()
+}
+
+void stmtFUNCTION() #stmtFUNCTION : {
+    Token t = new Token();
+}
+{
+    t=<IDENTIFIER> <LEFTPAREN> (Expression() ( <COMMA> Expression() )* )? <RIGHTPAREN> { jjtThis.jjtSetValue(t.image); }
+}
+
+void ComparisonOperator() #ComparisonOperator : {
+    Token t = new Token();
+}
+{
+    (t=<LT> | t=<GT> | t=<EQ> | t=<NEQ> | t=<LTE> | t=<GTE>) { jjtThis.jjtSetValue(t.image); }
+
+}
+
+void VariableAccess() #VariableAccess : {
+    Token t = new Token();
+}
+{
+    ( ArrayCall() | Variable() )
+    {
+    }
+}
+
+void ArrayCall() #ArrayCall : {
+}
+{
+    Variable() <LEFTPAREN> Expression() <RIGHTPAREN>
+}
+
+void Variable() #Variable : {
+    Token t = new Token();
+}
+{
+    t=<VARIABLE>
+    {
+        if (!isAssignedVariable) {
+            if(!cds.variables.containsKey(t.image)) {
+                cds.errVariables.add(t.image);
+            }
+        }
+        if (isAssignedVariable) {
+            cds.variables.put(t.image, getType(t.image));
+        }
+        isAssignedVariable = false;
+        jjtThis.jjtSetValue(t.image);
+    }
+}
+
+void Expression() #Expression : {
+    Token t = new Token();
+}
+{
+    Term() ( (t=<PLUS> | t=<MINUS>) Term() )*
+    {
+        jjtThis.jjtSetValue(t.image);
+    }
+}
+
+void Term() #Term : {
+    Token t = new Token();
+}
+{
+    Factor() ( (t=<MULTIPLY> | t=<DIVIDE> | t=<MOD>) Factor() )* { jjtThis.jjtSetValue(t.image); }
+}
+
+void Factor() #Factor : {
+    Token t = new Token();
+}
+{
+    Base() ( (t=<POWER>) Base() )* { jjtThis.jjtSetValue(t.image); }
+}
+
+void Base() #Base : {
+}
+{
+    (String() | Number() | stmtFUNCTION() | VariableAccess() | <LEFTPAREN> Expression() <RIGHTPAREN>)
+}
+
+void String() #String : {
+    Token t = new Token();
+}
+{
+    t=<STRING> { jjtThis.jjtSetValue(t.image); }
+}
+
+void Number() #Number : {
+    Token t = new Token();
+}
+{
+    t=<NUMBER> {
+    jjtThis.jjtSetValue(t.image);
+}
+}

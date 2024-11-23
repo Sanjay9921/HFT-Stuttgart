@@ -1,0 +1,73 @@
+0. The Beginning
+****************
+
+On the LIDA server, call guile.
+
+1. Lists
+********
+
+A function call to + with arguments 1 and 2:
+(+ 1 2)
+
+A list with three elements:
+'(+ 1 2)
+
+Returning the head of the list:
+(car '(+ 1 2))
+
+Returning the tail of the list:
+(cdr '(+ 1 2))
+
+Returning the tail of a one-element list yields the empty list '():
+(cdr '(1))
+
+Adding a new element to a list:
+(cons + '(1 2))
+
+Joining two lists:
+(append '(1 2) '(3 4))
+
+
+2. Functions
+************
+
+Defining a function:
+
+(define plus
+	(lambda (x y) (+ x y)))
+
+Executing the function:
+(plus 1 2)
+
+Using if-else:
+
+(define pos
+	(lambda (x) (if (> x 0) #t
+		    	     	#f)))
+Answer: 
+1. (pos 5) 
+2. (pos -5)
+3. (pos 0)
+
+Task: Write a function that returns the sign of the input (1, 0 or -1)
+
+Answer:
+
+(define sign (lambda (x) (if (> x 0) 1 ( if (< x 0) -1 0 ) ) )
+
+
+3. For later: Unnamed Functions
+*******************************
+
+; unnamed function with two arguments
+(lambda ( x y ) (+ x y))
+
+4. Trace
+********
+
+Trace shows what value function calls return as they are made.
+
+
+5. The End
+**********
+(quit) quits the interpreter

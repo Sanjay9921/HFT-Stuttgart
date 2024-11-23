@@ -1,0 +1,100 @@
+<!-- ANT BUILD.XML -->
+<!-- Easy to "CLEAN", "COMPILE", AND "RUN" JJTREE -> JAVACC FILES -->
+
+<project name="CPL-COMPILER-GW-BASIC-PCL" basedir="." default="compile">
+    <!-- 1. Properties -->
+
+    <!-- 1.1 "src" directory -->
+    <property name="src.dir" value="src"/>
+
+    <!-- 1.2 custom "lib" directory -->
+    <property name="lib.dir" value="lib"/>
+
+    <!-- 1.2.1 Contains javacc.jar library -->
+    <property name="javacc.jar" value="${lib.dir}/javacc.jar"/>
+
+    <!-- 1.3 create "build" directory -->
+    <property name="build.dir" value="build"/>
+
+    <!-- 1.3.1 create "generated" subdirectory -->
+    <property name="generated.dir" value="${build.dir}/generated"/>
+
+    <!-- 1.4 create "results" directory -->
+    <property name="results.dir" value="results"/>
+
+    <!-- 2. Targets -->
+
+    <!-- 2.1 ANT CLEAN -->
+    <!-- TERMINAL COMMAND: ant clean -->
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+
+    <!-- 2.2 ANT INIT -->
+    <!-- TERMINAL COMMAND: ant init -->
+    <target name="init">
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${generated.dir}"/>
+    </target>
+
+    <!-- 2.2.1 JJTree -->
+    <!-- Parses GWBasicLexer.jjt to generate GWBasicLexer.jj -->
+    <target name="jjtree" depends="init">
+        <jjtree target="${src.dir}/GWBasicLexer.jjt" outputdirectory="${generated.dir}" javacchome="${lib.dir}"/>
+    </target>
+
+    <!-- 2.2.2 JavaCC -->
+    <!-- Parses GWBasicLexer.jj to generate GWBasicLexer.jj -->
+    <target name="javacc" depends="jjtree">
+        <javacc target="${generated.dir}/GWBasicLexer.jj" outputdirectory="${generated.dir}" javacchome="${lib.dir}"/>
+    </target>
+
+    <!-- 2.3 ANT COMPILE -->
+    <!-- TERMINAL COMMAND: ant compile -->
+    <target name="compile" depends="javacc">
+        <javac srcdir="${src.dir}" destdir="${build.dir}">
+            <src path="${generated.dir}"/>
+            <classpath>
+                <pathelement path="${javacc.jar}"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <!-- 2.4 ANT JAR -->
+    <!-- TERMINAL COMMAND: ant jar -->
+    <target name="jar" depends="compile">
+        <mkdir dir="${build.dir}/lib"/>
+        <jar destfile="${build.dir}/lib/CPL-COMPILER-GW-BASIC-PCL.jar" basedir="${build.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="Main"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <!-- 2.5 ANT RUN -->
+    <!-- TERMINAL COMMAND: ant run -->
+    <target name="run" depends="compile">
+        <java classname="Main" fork="true" failonerror="true">
+            <classpath>
+                <pathelement path="${build.dir}"/>
+                <pathelement path="${javacc.jar}"/>
+            </classpath>
+            <arg value="${file}"/>
+        </java>
+    </target>
+
+    <!-- 2.5.1 Generate PCL Output -->
+    <target name="test" depends="run">
+        <exec executable="gcc">
+            <arg value="GW_Basic_To_PCL_Output.c"/>
+            <arg value="-o"/>
+            <arg value="output"/>
+            <arg value="-g"/>
+        </exec>
+    </target>
+
+    <!-- 2.6 ANT ALL -->
+    <!-- This command runs all the main/required commands in one go serially -->
+    <!-- TERMINAL COMMAND: ant all -->
+    <target name="all" depends="clean, jar, compile"/>
+</project>

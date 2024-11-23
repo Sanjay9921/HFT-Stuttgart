@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <property name="output_file_name" value="GW_Basic_To_PCL_Output.c"/>
+</config>
